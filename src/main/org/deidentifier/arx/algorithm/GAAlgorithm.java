@@ -238,7 +238,7 @@ public class GAAlgorithm extends AbstractAlgorithm {
 		
 		//System.out.println("Initilization");
 		//printPopulations(z1, z2);
-		//System.out.println("Pop1 size: " + z1.individualCount() + " | Pop2 size: " + z2.individualCount());
+		System.out.println("Pop1 size: " + z1.individualCount() + " | Pop2 size: " + z2.individualCount());
 		//System.out.println("0;"+checker.getNumChecksPerformed());
 		tempTime = System.currentTimeMillis();
 		
@@ -273,6 +273,7 @@ public class GAAlgorithm extends AbstractAlgorithm {
                 //System.out.println("Individuals: " + this.individualsTotal + " with loss > 0.99999: " + this.individualsWithHighLoss);
                 //System.out.println("Result");
                 //printPopulations(z1, z2);
+                System.out.println("Pop1 size: " + z1.individualCount() + " | Pop2 size: " + z2.individualCount());
                 return false;
             }
             

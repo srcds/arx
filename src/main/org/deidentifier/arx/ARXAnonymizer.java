@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.deidentifier.arx.algorithm.AbstractAlgorithm;
 import org.deidentifier.arx.algorithm.DataDependentEDDPAlgorithm;
 import org.deidentifier.arx.algorithm.FLASHAlgorithm;
 import org.deidentifier.arx.algorithm.FLASHStrategy;
-import org.deidentifier.arx.algorithm.GAAlgorithm;
+import org.deidentifier.arx.algorithm.GeneticAlgorithm;
 import org.deidentifier.arx.algorithm.LIGHTNINGAlgorithm;
 import org.deidentifier.arx.algorithm.LIGHTNINGTopDownAlgorithm;
 import org.deidentifier.arx.criteria.BasicBLikeness;
@@ -64,7 +64,7 @@ public class ARXAnonymizer { // NO_UCD
     public static final boolean PRODUCTION_RELEASE = true;
 	
 	/** The global version string of this release*/
-	public static final String VERSION = "3.8.0";
+	public static final String VERSION = "3.9.0";
 
     /**
      * Temporary result of the ARX algorithm.
@@ -403,6 +403,9 @@ public class ARXAnonymizer { // NO_UCD
 
         // Check for null
         if (handle == null) { throw new NullPointerException("Data must not be null"); }
+
+        // Check for null
+        if (handle.getNumRows() == 0) { throw new IllegalArgumentException("Data does not contain any rows"); }
         
         // Check sensitive attributes
         if (config.isPrivacyModelSpecified(LDiversity.class) ||
@@ -656,7 +659,8 @@ public class ARXAnonymizer { // NO_UCD
     	case BEST_EFFORT_BINARY:
     	    
             // Sanity check
-            if (!(solutionSpace instanceof SolutionSpaceLong)) {
+            if (!(solutionSpace instanceof SolutionSpaceLong) ||
+                  solutionSpace.getSize().compareTo(BigInteger.valueOf(config.getHeuristicSearchThreshold())) > 0) {
                 throw new IllegalArgumentException("Solution space is too large to execute the binary heuristic algorithm. This is an implementation restriction which we hope to fix soon.");
             }
                     
@@ -681,7 +685,7 @@ public class ARXAnonymizer { // NO_UCD
     	case BEST_EFFORT_GENETIC:
     	    
     	    // Run the genetic algorithm
-    	    return GAAlgorithm.create(solutionSpace,
+    	    return GeneticAlgorithm.create(solutionSpace,
                                       checker,
                                       config.getGeneticAlgorithmIterations(),
                                       config.getGeneticAlgorithmCrossoverFraction(),

@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,7 @@ public class LIGHTNINGAlgorithm extends AbstractAlgorithm{
         Object nextId;
         while ((nextId = queue.poll()) != null) {
             Transformation<?> next = solutionSpace.getTransformation(nextId);
-            if (!prune(next)) {
+            if (!prune(next, true)) {
                 step++;
                 if (step % stepping == 0) {
                     dfs(queue, next);
@@ -182,25 +182,27 @@ public class LIGHTNINGAlgorithm extends AbstractAlgorithm{
     /**
     * Returns whether we can prune this Transformation
     * @param transformation
+    * @param up whether this is a bottom-up search
     * @return
     */
-    protected boolean prune(Transformation<?> transformation) {
+    protected boolean prune(Transformation<?> transformation, boolean up) {
         
         // Already expanded
-        if (transformation.hasProperty(propertyExpanded) ||
-            transformation.hasProperty(propertyInsufficientUtility)){
+        if (transformation.hasProperty(propertyExpanded) || (up && transformation.hasProperty(propertyInsufficientUtility))){
             return true;
         }
-        
-        // If a current optimum has been discovered
-        Transformation<?> optimum = getGlobalOptimum();
-        if (optimum != null && !Arrays.equals(optimum.getGeneralization(), transformation.getGeneralization())) {
-            
-            // We can compare lower bounds on quality
-            InformationLoss<?> bound = transformation.getLowerBound();
-            if (bound != null && bound.compareTo(optimum.getInformationLoss()) >= 0) {
-                transformation.setProperty(propertyInsufficientUtility);
-                return true;
+
+        if (up) {
+            // If a current optimum has been discovered
+            Transformation<?> optimum = getGlobalOptimum();
+            if (optimum != null && !Arrays.equals(optimum.getGeneralization(), transformation.getGeneralization())) {
+                
+                // We can compare lower bounds on quality
+                InformationLoss<?> bound = transformation.getLowerBound();
+                if (bound != null && bound.compareTo(optimum.getInformationLoss()) >= 0) {
+                    transformation.setProperty(propertyInsufficientUtility);
+                    return true;
+                }
             }
         }
         

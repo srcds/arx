@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
     public double getGeneticAlgorithmProductionFraction() {
         return config.getGeneticAlgorithmProductionFraction();
     }
-    
+
     /**
      * @return
      * @see org.deidentifier.arx.ARXConfiguration#getGeneticAlgorithmSubpopulationSize()
@@ -287,7 +287,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
     public int getGeneticAlgorithmSubpopulationSize() {
         return config.getGeneticAlgorithmSubpopulationSize();
     }
-
+    
     /**
      * @return
      * @see org.deidentifier.arx.ARXConfiguration#getHeuristicSearchThreshold()
@@ -428,7 +428,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
     public RowSet getResearchSubset() {
         return researchSubset;
     }
-    
+
     /**
      * Delegates to an instance of ARXConfiguration.
      *
@@ -437,7 +437,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
     public double getSuppressionLimit() {
         return config.getSuppressionLimit();
     }
-
+    
     /**
      * Returns the suppression/generalization weight, that will be respected by
      * the NDS metric.
@@ -552,7 +552,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         }
         this.config.getCostBenefitConfiguration().setAdversaryCost(adversaryCost);
     }
-    
+
     /**
      * @param adversaryGain the adversaryGain to set
      */
@@ -592,7 +592,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setAttributeWeight(attribute, weight);
     }
-
+    
     /**
      * Sets crossover percentage
      * 
@@ -602,7 +602,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setGeneticAlgorithmCrossoverFraction(geneticAlgorithmCrossoverFraction);
     }
-
+    
     /**
      * Deterministic execution
      * 
@@ -612,7 +612,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setGeneticAlgorithmDeterministic(geneticAlgorithmDeterministic);
     }
-
+    
     /**
      * Sets the size of the elite group
      * 
@@ -642,7 +642,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setGeneticAlgorithmImmigrationInterval(geneticAlgorithmImmigrationInterval);
     }
-    
+
     /**
      * @param geneticAlgorithmIterations
      * @see org.deidentifier.arx.ARXConfiguration#setGeneticAlgorithmIterations(int)
@@ -651,7 +651,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setGeneticAlgorithmIterations(geneticAlgorithmIterations);
     }
-
+    
     /**
      * Sets the mutation probability
      * 
@@ -661,10 +661,9 @@ public class ModelConfiguration implements Serializable, Cloneable {
         setModified();
         config.setGeneticAlgorithmMutationProbability(geneticAlgorithmMutationProbability);
     }
-    
+
     /**
      * Sets the production fraction
-     * 
      * @param geneticAlgorithmProductionFraction
      */
     public void setGeneticAlgorithmProductionFraction(double geneticAlgorithmProductionFraction) {
@@ -741,6 +740,7 @@ public class ModelConfiguration implements Serializable, Cloneable {
     public void setInput(final Data data) {
         setModified();
         input = data;
+
     }
     
     /**

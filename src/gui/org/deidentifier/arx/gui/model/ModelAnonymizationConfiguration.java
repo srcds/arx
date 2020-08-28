@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ public class ModelAnonymizationConfiguration implements Serializable {
         HEURISTIC_TOP_DOWN,  // Lightning, top-down
         HEURISTIC_GENETIC    // Genetic algorithm
     }
-    
     /**
      * Transformation type
      * @author Fabian Prasser
@@ -60,8 +59,6 @@ public class ModelAnonymizationConfiguration implements Serializable {
     private ModelAnonymizationConfiguration.TransformationType transformationType = TransformationType.GLOBAL;
     /** Limits */
     private Boolean                                            stepLimitEnabled   = false;
-    /** Limits */
-    private Boolean                                            timeLimitEnabled   = false;
 
     /**
      * Creates a new instance
@@ -142,14 +139,7 @@ public class ModelAnonymizationConfiguration implements Serializable {
      * @return the timeLimitEnabled
      */
     public boolean isTimeLimitEnabled() {
-        
-        // Backwards compatibility
-        if (timeLimitEnabled == null) {
-           return (this.searchType == SearchType.TIME_LIMIT) ? true : false; 
-        }
-        
-        // Done
-        return timeLimitEnabled;
+        return !isStepLimitEnabled();
     }
     
     /**
@@ -191,7 +181,7 @@ public class ModelAnonymizationConfiguration implements Serializable {
      * @param timeLimitEnabled the timeLimitEnabled to set
      */
     public void setTimeLimitEnabled(boolean timeLimitEnabled) {
-        this.timeLimitEnabled = timeLimitEnabled;
+        this.stepLimitEnabled = !timeLimitEnabled;
     }
 
     /**

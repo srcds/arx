@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -305,6 +305,10 @@ public abstract class ViewData implements IView {
             model.setSelectedAttribute(attr);
             table.setSelectedAttribute(attr);
             controller.update(new ModelEvent(this, ModelPart.SELECTED_ATTRIBUTE, attr));
+            // Fix missing table update on MacOS
+            if (SWTUtil.isMac()) {
+                this.table.redraw();
+            }
         }
     }
 

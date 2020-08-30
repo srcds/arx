@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class FLASHAlgorithmImpl extends AbstractAlgorithm {
 
         super(solutionSpace, checker, timeLimit, checkLimit);
         if (solutionSpace.getSize().compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
-            throw new IllegalArgumentException("Solution space is too large for running Flash. Choose another algorithm.");
+            throw new IllegalArgumentException("Solution space is too large to execute the optimal algorithm. Please choose another algorithm.");
         }
         this.solutionSpaceSize = solutionSpace.getSize().intValue();
         this.checked = 0;

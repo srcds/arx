@@ -1,6 +1,6 @@
 /*
  * ARX: Powerful Data Anonymization
- * Copyright 2012 - 2018 Fabian Prasser and contributors
+ * Copyright 2012 - 2020 Fabian Prasser and contributors
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public class DialogProperties implements IDialog {
     private void createTabGeneticAlgorithm(PreferencesDialog window) {
 
         window.addCategory(Resources.getMessage("PropertyDialog.136"), //$NON-NLS-1$
-        controller.getResources().getManagedImage("symbol_g.png")); //$NON-NLS-1$
+        controller.getResources().getManagedImage("genetic.png")); //$NON-NLS-1$
         
         window.addGroup(Resources.getMessage("DialogProperties.21")); //$NON-NLS-1$
 
@@ -109,7 +109,7 @@ public class DialogProperties implements IDialog {
         window.addPreference(new PreferenceInteger(Resources.getMessage("PropertyDialog.138"), 1, 1000000, 10) { //$NON-NLS-1$
             protected Integer getValue() { return model.getInputConfig().getGeneticAlgorithmImmigrationInterval(); }
             protected void setValue(Object t) { model.getInputConfig().setGeneticAlgorithmImmigrationInterval((Integer)t); }});
-        
+ 
         window.addPreference(new PreferenceDouble(Resources.getMessage("PropertyDialog.139"), 0, 1, 0.2d) { //$NON-NLS-1$
             protected Double getValue() { return model.getInputConfig().getGeneticAlgorithmImmigrationFraction(); }
             protected void setValue(Object t) { model.getInputConfig().setGeneticAlgorithmImmigrationFraction((Double)t); }});

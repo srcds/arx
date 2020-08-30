@@ -1155,6 +1155,14 @@ public class ARXConfiguration implements Serializable, Cloneable {
     }
 
     /**
+     * Sets the fraction of individuals crossed over
+     * @param geneticAlgorithmCrossoverPercent
+     */
+    public void setGeneticAlgorithmCrossoverFraction(double geneticAlgorithmCrossoverFraction) {
+        this.geneticAlgorithmCrossoverFraction = geneticAlgorithmCrossoverFraction;
+    }
+    
+    /**
 	 * Deterministic execution
 	 * @param geneticAlgorithmDeterministic
 	 */

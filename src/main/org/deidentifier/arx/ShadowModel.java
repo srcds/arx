@@ -684,6 +684,7 @@ public class ShadowModel {
         // Calculate statistics
         Map<String, StatisticsSummary<?>> statistics = population.getStatistics().getSummaryStatistics(false);
         
+        List<Integer> categoricalIndicies = new ArrayList<>();
         // For each attribute
         for (String attribute : attributes) {
             
@@ -716,6 +717,7 @@ public class ShadowModel {
                 
                 // Pre-encode categorical values considering the order
                 int column = population.getColumnIndexOf(attribute);
+                categoricalIndicies.add(column);
                 StatisticsFrequencyDistribution frequencyDistribution = population.getStatistics().getFrequencyDistribution(column);
                 if (categoricalMappings.get(attribute) == null) {
                 	categoricalMappings.put(attribute, new HashMap<>());
@@ -729,17 +731,27 @@ public class ShadowModel {
             }
         }
         
-        // Calculate centroid
+        // Calculate centroid. Categorical values will get the max value for the categorical attribute.
         double[] centroid = new double[attributes.length];
         for (int row = 0; row < population.getNumRows(); row++) {
             double[] vector = getVector(population, row);
             for (int i = 0; i < attributes.length; i++) {
-                centroid[i] += vector[i];
+            	if (categoricalIndicies.contains(i)) {
+            		if (vector[i] > centroid[i]) {
+            			centroid[i] = vector[i];
+            		}
+            	} else {
+                    centroid[i] += vector[i];
+
+            	}
             }
         }
         for (int i = 0; i < attributes.length; i++) {
-            centroid[i] /= (double)population.getNumRows();
+        	if (!categoricalIndicies.contains(i)) {
+                centroid[i] /= (double)population.getNumRows();
+        	}
         }
+       
         
         // Calculate min and max-distance
         minDistance = Double.MAX_VALUE;

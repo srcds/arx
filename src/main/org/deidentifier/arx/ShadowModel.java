@@ -566,6 +566,8 @@ public class ShadowModel {
     private Map<String, DataType<?>> dataTypes    = new HashMap<>();
     /** Dictionary */
     private Dictionary               dictionary   = new Dictionary();
+    /** Categorical mappings containing frequencies */
+    private Map<String, Map<String, Double>> categoricalMappings = new HashMap<>();
     /** Type */
     private FeatureType              featureType;
     /** Maximum */
@@ -682,6 +684,7 @@ public class ShadowModel {
         // Calculate statistics
         Map<String, StatisticsSummary<?>> statistics = population.getStatistics().getSummaryStatistics(false);
         
+        List<Integer> categoricalIndicies = new ArrayList<>();
         // For each attribute
         for (String attribute : attributes) {
             
@@ -714,23 +717,41 @@ public class ShadowModel {
                 
                 // Pre-encode categorical values considering the order
                 int column = population.getColumnIndexOf(attribute);
+                categoricalIndicies.add(column);
+                StatisticsFrequencyDistribution frequencyDistribution = population.getStatistics().getFrequencyDistribution(column);
+                if (categoricalMappings.get(attribute) == null) {
+                	categoricalMappings.put(attribute, new HashMap<>());
+                }
+                for (int i = 0; i < frequencyDistribution.values.length; i++) {
+                	categoricalMappings.get(attribute).put(frequencyDistribution.values[i], frequencyDistribution.frequency[i]);
+                }
                 for (String value : population.getStatistics().getDistinctValuesOrdered(column, true)) {
                     dictionary.probe(attribute, value);
                 }
             }
         }
         
-        // Calculate centroid
+        // Calculate centroid. Categorical values will get the max value for the categorical attribute.
         double[] centroid = new double[attributes.length];
         for (int row = 0; row < population.getNumRows(); row++) {
             double[] vector = getVector(population, row);
             for (int i = 0; i < attributes.length; i++) {
-                centroid[i] += vector[i];
+            	if (categoricalIndicies.contains(i)) {
+            		if (vector[i] > centroid[i]) {
+            			centroid[i] = vector[i];
+            		}
+            	} else {
+                    centroid[i] += vector[i];
+
+            	}
             }
         }
         for (int i = 0; i < attributes.length; i++) {
-            centroid[i] /= (double)population.getNumRows();
+        	if (!categoricalIndicies.contains(i)) {
+                centroid[i] /= (double)population.getNumRows();
+        	}
         }
+       
         
         // Calculate min and max-distance
         minDistance = Double.MAX_VALUE;
@@ -915,23 +936,26 @@ public class ShadowModel {
                 // Handle data type represented as long
                 Long _value = handle.getLong(row, column);
                 value = _value != null ? _value : 0d; // TODO: how to handle null here
+                value = (value + minimum.get(attribute)) / (minimum.get(attribute) + maximum.get(attribute));
                 
             } else if (_clazz.equals(Double.class)) {
                 
                 // Handle data type represented as double
                 Double _value = handle.getDouble(row, column);
                 value = _value != null ? _value : 0d; // TODO: how to handle null here
-                
+                value = (value + minimum.get(attribute)) / (minimum.get(attribute) + maximum.get(attribute));
+
             } else if (_clazz.equals(Date.class)) {
                 
                 // Handle data type represented as date
                 Date _value = handle.getDate(row, column);
                 value = _value != null ? _value.getTime() : 0d; // TODO: how to handle null here
-                
+                value = (value + minimum.get(attribute)) / (minimum.get(attribute) + maximum.get(attribute));
+
             } else if (_clazz.equals(String.class)) {
                 
-                // Map via dictionary
-                value = dictionary.probe(attribute, handle.getValue(row, column));
+                // Map via categoricalMappings, which include frequencies (range is 0 to 1) 
+                value = categoricalMappings.get(attribute).get(handle.getValue(row, column));
                 
             } else {
                 throw new IllegalStateException("Unknown data type");
